@@ -1,0 +1,20 @@
+{
+  "name": "malina-fullstack-app",
+  "version": "0.0.1",
+  "description": "malina client and Derver server app, bundeled with esbuild",
+  "main": "index.js",
+  "scripts": {
+    "build": "node esbuild",
+    "dev": "node esbuild --dev",
+    "prestart": "npm run build",
+    "start": "cd dist && node app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "derver": "^0.5.1",
+    "esbuild": "^0.13.12",
+    "malinajs": "^0.6.x",
+    "node-watch": "^0.7.2"
+  }
+}

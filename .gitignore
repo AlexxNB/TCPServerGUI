@@ -1,0 +1,4 @@
+node_modules
+dist/app.*
+dist/static/build
+package-lock.json
