@@ -1,0 +1,57 @@
+<script>
+  import {sockets} from '@/stores/sockets';
+  import {MalinaUI,Container} from 'malina-ui';
+
+  import Header from './Header';
+  import Sockets from './Sockets';
+</script>
+
+<MalinaUI theme="dark"/>
+
+<Container xl class="container">
+
+  <div class="header">
+    <Header/>
+  </div>
+
+  <div class="split">
+
+    <div class="list">
+      <Sockets/>
+    </div>
+
+    <div class="requests">
+      {JSON.stringify(sockets.$)}
+    </div>
+    
+  </div>
+</Container>
+
+<style>
+  .container{
+    --border: 1px solid var(--color-neutral);
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    border-right: var(--border);
+    border-left: var(--border);
+  }
+
+  .split{
+    display: flex;
+    flex: 1;
+  }
+
+  .header{
+    border-bottom: var(--border);
+  }
+
+  .list{
+    border-right: var(--border);
+    width: 20rem;
+  }
+
+  .requests{
+    flex: 1;
+  }
+</style>

@@ -1,0 +1,14 @@
+<script>
+  import {Navbar} from 'malina-ui';
+  import {api} from '@/lib/api';
+</script>
+
+<Navbar>
+    <h3>TCP Server GUI</h3>
+
+    {#slot:right}
+      {#await api('/server/info') then info}
+        <a href="tcp://{info.host}:{info.port}">{info.host}:{info.port}</a>
+      {/await}
+    {/slot}
+</Navbar>

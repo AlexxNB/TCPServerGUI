@@ -11,6 +11,7 @@ const { fork } = require("child_process");
 const { build } = require("esbuild");
 const { createRemote } = require("derver");
 const {malinaPlugin} = require("malinajs/malina-esbuild");
+const {sveltePaths} = require('esbuild-svelte-paths');
 const watch = require("node-watch");
 const path = require("path");
 
@@ -66,6 +67,7 @@ async function build_client(){
     minify: !DEV,
     incremental: DEV,
     plugins: [
+      sveltePaths( {extension: 'xht'} ),
       malinaPlugin(malinaConfig)
     ]
   });

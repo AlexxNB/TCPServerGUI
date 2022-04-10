@@ -1,0 +1,29 @@
+<script>
+  import {sockets} from '@/stores/sockets';
+</script>
+
+<h5>Connections list</h5>
+
+{#if sockets.$.length}
+<ul>
+  {#each sockets.$ as socket}
+    <li>
+      <a href="/socket/{socket.id}"><span>#{socket.num}</span> {socket.ip}</a>
+    </li>
+  {/each}
+</ul>
+{:else}
+  No connections
+{/if}
+
+<style>
+
+  span{
+    font-weight: bold;
+  }
+
+  ul{
+    list-style-type: none;
+  }
+  
+</style>
