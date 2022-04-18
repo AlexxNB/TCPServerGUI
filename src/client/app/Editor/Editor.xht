@@ -1,0 +1,183 @@
+<script>
+  import {modes} from './modes.js';
+
+  export let value=[];
+  export let mode = 'hex';
+
+  let inputs = [];    //Array of <input> elements;
+
+  // Current mode object
+  $: MODE = modes[mode];
+
+  // Number of inputs lines
+  $: lines = (Math.ceil(value.length/16) || 1) + 1;
+
+
+  $: value, ()=>console.log(value);
+  
+
+  function byteInput(el,id){
+    inputs[id] = el;
+
+    function selectNext(){
+      $tick(()=>{
+        const {right} = getSiblings(id);
+        right && right.select();
+      });
+    }
+
+    function inputHandler(e){
+      el.value = filterByte(el.value);
+
+      if(el.value.length === MODE.length) {
+        value[id] = MODE.int(el.value);
+        selectNext();
+      }
+
+      if(el.value.length === 0 && id == value.length-1) value = value.slice(0,id);
+    }
+
+    function blurHandler(){
+      if(value.length !== id && el.value.length === 0) value[id]=0;
+      if(el.value.length > 0) value[id] = MODE.int(el.value);
+    }
+
+    function keyHandler(e){
+      const {left,right,top,bottom} = getSiblings(id);
+      const code = e.code;
+      const cursor = e.target.selectionStart;
+      const cursorStart = cursor === 0;
+      const cursorEnd = cursor === el.value.length;
+
+      if(code === 'Enter'){
+        el.blur();
+        selectNext();
+      }
+      else if(code === 'Backspace' && el.value === '') left && left.select();
+      else if(code === 'ArrowLeft' && cursorStart) left && left.select();
+      else if(code === 'ArrowRight' && cursorEnd) right && right.select();
+      else if(code === 'ArrowUp') top && top.select();
+      else if(code === 'ArrowDown') bottom && bottom.select();
+    }
+
+    el.addEventListener('input',inputHandler);
+    el.addEventListener('blur',blurHandler);
+    el.addEventListener('keyup',keyHandler);
+
+    return ()=>{
+      el.removeEventListener('input',inputHandler);
+      el.removeEventListener('blur',blurHandler);
+      el.removeEventListener('keyup',keyHandler);
+    }
+  }
+
+  // Convert value from integer
+  function getByteValue(id){
+    let val = value[id];
+    if(val === undefined) return '';
+    
+    val = MODE.value(val);
+    if(MODE.uppercase) val = val.toUpperCase();
+    if(MODE.lead) val = val.padStart(MODE.length,MODE.lead);
+    return val;
+  }
+
+  // Filter inputed value
+  function filterByte(val){
+    val = val.slice(0,MODE.length);
+
+    if(MODE.uppercase) val = val.toUpperCase();
+    if(MODE.filter) val = val.replace( new RegExp(`[^${MODE.filter}]`) ,'');
+    if(MODE.check) val = MODE.check(val);
+
+    return val;
+  }
+
+  // Get sibling inputs for input with id
+  function getSiblings(id){
+    return {
+      left: id>0 && inputs[id-1],
+      right: inputs.length >= id && inputs[id+1],
+      top: id>=16 && inputs[id-16],
+      bottom: inputs.length >= id+16 && inputs[id+16],
+    }
+  }
+</script>
+
+<div class="table" class:scroll={lines > 2}>
+  <table #table>
+    <thead>
+      <tr>
+        <th> </th>
+        {#each 16 as _,byte}
+        <th>{byte.toString(16)}</th>
+        {/each}
+      </tr>
+    </thead>
+    <tbody>
+      {#each lines as _,line}
+        <tr>
+          <td class="adr">{(line*16).toString(16)}</td>
+          {#each 16 as _,byte}
+            {* const id = (16*line)+byte}
+            <td><input type="text" *byteInput={id} disabled={id > value.length} value={getByteValue(id)}/></td>
+          {/each}
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  input{
+    width: 100%;
+    text-align:center;
+    border: 1px solid var(--color-neutral);
+    background-color: var(--color-soft);
+    color: var(--color-text);
+    font-family: monospace;
+    outline:none;
+  }
+
+  input:focus{
+    border-color: var(--color-primary)
+  }
+
+  input:disabled{
+    background-color: var(--color-bg);
+    border-color: var(--color-soft);
+    cursor: not-allowed;
+  }
+
+  table  { 
+    border-collapse: collapse; 
+    width: 100%; 
+    font-family: monospace;
+  }
+  th, td { 
+    padding: 0; 
+    text-align: center
+  }
+  th { 
+    background-color: var(--color-soft); 
+    
+  }
+
+  thead{
+    position: sticky; top: 0; z-index: 1;
+  }
+
+  .table{
+    overflow: hidden;
+    height: 11rem;
+  }
+
+  .scroll{
+    overflow: scroll;
+  }
+
+  .adr{
+    text-align: right;
+    padding: 0 1rem;
+  }
+</style>

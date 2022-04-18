@@ -4,7 +4,7 @@
 </script>
 
 <Navbar>
-    <h3>TCP Server GUI</h3>
+    <a href="/" class="logo"><h3>TCP Server GUI</h3></a>
 
     {#slot:right}
       {#await api('/server/info') then info}
@@ -12,3 +12,9 @@
       {/await}
     {/slot}
 </Navbar>
+
+<style>
+  .logo{
+    text-decoration: none;
+  }
+</style>

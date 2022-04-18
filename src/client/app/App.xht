@@ -1,30 +1,61 @@
 <script>
+  import '@/app/global.css';
+  
   import {sockets} from '@/stores/sockets';
-  import {MalinaUI,Container} from 'malina-ui';
+  import {MalinaUI,Container,Card,Pane} from 'malina-ui';
+  import {Route,router} from 'malinajs-router';
 
   import Header from './Header';
   import Sockets from './Sockets';
+  import Requests from './Requests';
+
+  router.method('hash');
 </script>
 
 <MalinaUI theme="dark"/>
 
 <Container xl class="container">
+  <Pane col>
 
-  <div class="header">
-    <Header/>
-  </div>
+    <Pane size="5" class="header">
+      <Header/>
+    </Pane>
 
-  <div class="split">
+    <Pane row>
+      <Pane size="15" class="list">
+        <Sockets/>
+      </Pane>
 
-    <div class="list">
-      <Sockets/>
-    </div>
+      <Pane col>
+        <Route>
+          <Route path="/">
+            <div>
+              <Container>
 
-    <div class="requests">
-      {JSON.stringify(sockets.$)}
-    </div>
-    
-  </div>
+                <Card class="text-center mt-2">
+                  Pick available connection in the list
+                </Card>
+
+                <Card class="mt-2">
+                  <pre>{JSON.stringify(sockets.$,null,' ')}</pre>
+                </Card>
+
+              </Container>
+            </div>
+          </Route>
+
+          <Route path="/socket/:socket_id">
+            {#slot params}
+              <Requests id={params.socket_id}/>
+            {/slot}
+          </Route>
+
+          <Route fallback redirect="/" />
+        </Route>
+      </Pane>
+    </Pane>
+  </Pane>
+
 </Container>
 
 <style>
@@ -32,26 +63,17 @@
     --border: 1px solid var(--color-neutral);
     display: flex;
     min-height: 100vh;
-    flex-direction: column;
-    border-right: var(--border);
     border-left: var(--border);
+    border-right: var(--border);
   }
 
-  .split{
-    display: flex;
-    flex: 1;
-  }
 
   .header{
     border-bottom: var(--border);
+    overflow-y: hidden;
   }
 
   .list{
     border-right: var(--border);
-    width: 20rem;
-  }
-
-  .requests{
-    flex: 1;
   }
 </style>

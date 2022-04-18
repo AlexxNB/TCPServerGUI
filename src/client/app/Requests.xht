@@ -1,0 +1,104 @@
+<script>
+  import {Card,Container,Pane,Button,Icon,Field} from 'malina-ui';
+  import {mdiPlus, mdiCircle} from '@mdi/js';
+  import {Route} from 'malinajs-router';
+  import {sockets} from '@/stores/sockets';
+
+  import Request from '@/app/Request';
+  import Editor from '@/app/Editor';
+  import {modes} from '@/app/Editor/modes.js';
+
+  export let id;
+
+  let socket;
+  let info;
+  let requests = [];
+
+  let editorMode = 'hex';
+
+  $onMount( ()=> sockets.$$(updateSocket) );
+  $: id, updateSocket;
+
+  function updateSocket(){
+    socket = sockets.$.find( s => s.id==id );
+    if(socket) info = {
+      ip: socket.ip,
+      num: socket.num,
+    }
+  }
+
+  function addRequest(){
+    requests.push({
+      request:[],
+      answer:[]
+    });
+  }
+</script>
+
+
+<Pane row size="5" class="top">
+  <Pane>
+    <div class="status">
+      {#if info}
+        <Icon src={mdiCircle} color="var(--color-{socket ? 'success' : 'error'})" size="0.7"/>
+        Connection #{info.num}
+        <span>
+          {info.ip}
+        </span>
+      {/if}
+    </div>
+  </Pane>
+  <Pane class="right">
+    <Button primary clear icon={mdiPlus} @click={addRequest}>Add request</Button>
+  </Pane>
+</Pane>
+<Pane>
+  {#each requests as request}
+    <div class="request">
+      <Request {request} />
+    </div>
+  {/each}
+</Pane>
+<Pane row class="editor" size="11">
+  <Pane><Editor mode={editorMode} /></Pane>
+  <Pane size="16" col>
+    <Pane>
+        <Field gapless class="switch">
+          {#each Object.keys(modes) as mode}
+            <Button secondary={editorMode===mode} small @click={editorMode=mode}>{mode[0].toUpperCase()+mode.slice(1)}</Button>
+          {/each}
+        </Field>
+    </Pane>
+    <Pane></Pane>
+    <Pane></Pane>
+  </Pane>
+</Pane>
+
+
+
+<style>
+  .top{
+    border-bottom: var(--border);
+  }
+  .request{
+    margin: 2rem;
+  }
+  .right{
+    text-align: right;
+  }
+  .status{
+    margin: 1rem;
+    font-weight: bold;
+  }
+  span{
+    color: var(--color-neutral);
+  }
+  .editor{
+    border-top: var(--border);
+    overflow: hidden;
+  }
+  .switch :global(.inputs){
+    align-items: center;
+    padding: .3rem;
+  }
+</style>
