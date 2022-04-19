@@ -12,10 +12,6 @@
   // Number of inputs lines
   $: lines = (Math.ceil(value.length/16) || 1) + 1;
 
-
-  $: value, ()=>console.log(value);
-  
-
   function byteInput(el,id){
     inputs[id] = el;
 

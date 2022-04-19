@@ -1,0 +1,140 @@
+<script>
+  import {saved} from '@/stores/saved';
+  import {Pane,Button,Input} from 'malina-ui';
+  import {mdiPlus} from '@mdi/js';
+
+  export let data;
+
+  let sRequest = null; // selected request
+
+  function selectRequest(request){
+    sRequest=request;
+    $emit('select', JSON.parse(JSON.stringify(sRequest.data)));
+  }
+
+  function editTitle(el){
+    let fallback;
+    function handlerInput(){
+      sRequest.rename(el.value);
+    }
+
+    function handlerBlur(){
+      if(el.value === '') sRequest.rename(fallback);
+    }
+
+    function handlerFocus(){
+      fallback = el.value;
+    }
+
+    el.addEventListener('input',handlerInput);
+    el.addEventListener('blur',handlerBlur);
+    el.addEventListener('focus',handlerFocus);
+
+    return ()=>{
+      el.removeEventListener('input',handlerInput);
+      el.removeEventListener('blur',handlerBlur);
+      el.removeEventListener('focus',handlerFocus);
+    }
+  }
+ 
+  function compareBytes(bytes){
+    return bytes.length === data.length && data.every((b, i) => b === bytes[i]);
+  }
+</script>
+
+<Pane>
+<h5 class="text-center">Saved requests</h5>
+
+{#if saved.$.length}
+  <ul>
+    {#each saved.$ as request}
+      <li>
+        <button 
+          @click={selectRequest(request)} 
+          class:active={sRequest===request}
+          title={request.title}
+        >{request.title}</button></li>
+    {/each}
+  </ul>
+{:else}
+  <div class="text-center">No saved <br/> requests</div>
+{/if}
+</Pane>
+{#if sRequest}
+  <Pane size="20" class="text-center editpanel">
+    <p>
+      <Input small value={sRequest.title}>
+        <^ *editTitle />
+      </Input>
+    </p>
+    <p>
+      <Button 
+        small 
+        primary
+        disabled={compareBytes(sRequest.data)}
+        @click={sRequest.update(data)}
+        title="Update saved bytes in this preset"
+      >Save changes</Button>
+    </p>
+    <div>
+      <Button 
+        small 
+        error
+        @click={()=>{sRequest.delete(); sRequest=null}}
+        title="Delete saved request"
+      >Delete</Button>
+      <Button 
+        small 
+        @click={sRequest=null}
+        title="Close panel"
+      >Close</Button>
+    </div>
+  </Pane>
+{:else}
+  <Pane size="5" class="text-center">
+    <Button 
+      small 
+      primary 
+      disabled={!data.length} 
+      icon={mdiPlus}
+      @click={saved.add(data)}
+      title="Save curent bytes in editor in the local storage"
+    >Save in list</Button>
+  </Pane>
+{/if}
+
+<style>
+
+  h5{
+    background-color: var(--color-soft);
+  }
+
+  ul{
+    list-style-type: none;
+    margin: 0;
+    padding-left: 1rem;
+  }
+
+  button {
+    all: unset;
+    cursor: pointer;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 14rem;
+  }
+
+  button:focus, button:hover {
+    outline: none;
+    text-decoration: underline;
+  }
+
+  .active{
+    font-weight: bold;
+  }
+
+  .editpanel{
+    border-top: var(--border);
+    padding: .2rem;
+  }
+</style>
