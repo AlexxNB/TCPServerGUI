@@ -2,7 +2,8 @@
   import '@/app/global.css';
   
   import {sockets} from '@/stores/sockets';
-  import {MalinaUI,Container,Card,Pane} from 'malina-ui';
+  import {MalinaUI,Container,Card,Pane, Button, Icon, theme, currentTheme} from 'malina-ui';
+  import {mdiGithub,mdiThemeLightDark} from '@mdi/js'
   import {Route,router} from 'malinajs-router';
 
   import Header from './Header';
@@ -12,7 +13,7 @@
   router.method('hash');
 </script>
 
-<MalinaUI theme="dark"/>
+<MalinaUI/>
 
 <Container xl class="container">
   <Pane col>
@@ -22,8 +23,19 @@
     </Pane>
 
     <Pane row>
-      <Pane size="15" class="list">
-        <Sockets/>
+      <Pane size="15" class="list" col>
+        <Pane>
+          <Sockets/>
+        </Pane>
+        <Pane size="4" class="text-center">
+          <a href="https://github.com/AlexxNB/TCPServerGUI" target="_blank"><Icon src={mdiGithub}/></a>
+          <Button 
+            clear
+            icon={mdiThemeLightDark}
+            secondary={currentTheme.$ == 'light'}
+            @click={theme.toggle()}
+          />
+        </Pane>
       </Pane>
 
       <Pane col>
@@ -75,5 +87,9 @@
 
   .list{
     border-right: var(--border);
+  }
+
+  a{
+    text-decoration: none;
   }
 </style>

@@ -16,7 +16,7 @@
     "derver": "^0.5.1",
     "esbuild": "^0.13.12",
     "esbuild-svelte-paths": "^0.1.4",
-    "malina-ui": "^0.0.30",
+    "malina-ui": "^0.0.31",
     "malinajs": "^0.6.57",
     "malinajs-router": "^0.1.9",
     "nanoid": "^3.3.2",

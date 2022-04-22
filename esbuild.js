@@ -2,7 +2,8 @@ const DEV = process.argv.includes('--dev');
 
 // Svelte compile configuration
 const malinaConfig = {
-  css: false  //use `css:true` to inline CSS in `bundle.js`
+  css: false,  //use `css:true` to inline CSS in `bundle.js`
+  compact: true
 };
 
 /* Edit this file below only if know what you doing! */
