@@ -10,20 +10,23 @@ export function runTCPServer(){
   let num = 0;
 
   const server = net.createServer( socket => {
-    const dataStore = store(null);
+    const dataStore = store([]);
 
     const socketObj = {
       id: nanoid(),
       num: num++,
       ip: socket.remoteAddress,
       data: dataStore,
-      send: data => socket.write(data),
+      send: data => {
+        socket.write(data);
+        dataStore.$.push({type:'out',data: data.toJSON().data});
+      },
       close: ()=>socket.destroy()
     };
 
     socketStore.add(socketObj);
 
-    socket.on('data',data => dataStore.$ = data);
+    socket.on('data',data => dataStore.$.push({type:'in',data: data.toJSON().data}));
     socket.on('close',() => socketStore.delete(socketObj));
   });
 

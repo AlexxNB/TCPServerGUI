@@ -6,6 +6,7 @@ const client = new net.Socket();
 
 client.connect(PORT,'localhost',()=>{
   console.log('Connected!');
+  client.write('Hello!');
 });
 
 client.on('data',(data)=>{

@@ -44,7 +44,7 @@
             </div>
           </Route>
 
-          <Route path="/socket/:socket_id">
+          <Route path="/socket/:socket_id" force>
             {#slot params}
               <Requests id={params.socket_id}/>
             {/slot}

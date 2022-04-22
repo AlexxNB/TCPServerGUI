@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "node esbuild",
-    "dev": "node esbuild --dev",
+    "dev": "node --enable-source-maps esbuild --dev",
     "prestart": "npm run build",
     "start": "cd dist && node app",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,11 +16,11 @@
     "derver": "^0.5.1",
     "esbuild": "^0.13.12",
     "esbuild-svelte-paths": "^0.1.4",
-    "malina-ui": "^0.0.28",
-    "malinajs": "^0.6.x",
-    "malinajs-router": "^0.1.7",
+    "malina-ui": "^0.0.30",
+    "malinajs": "^0.6.57",
+    "malinajs-router": "^0.1.9",
     "nanoid": "^3.3.2",
     "node-watch": "^0.7.2",
-    "storxy": "^0.1.9"
+    "storxy": "^0.1.12"
   }
 }

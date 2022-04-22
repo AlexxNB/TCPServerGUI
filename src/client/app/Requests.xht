@@ -2,7 +2,7 @@
   import {Card,Container,Pane,Button,Icon,Field} from 'malina-ui';
   import {mdiCircle, mdiSend} from '@mdi/js';
   import {Route} from 'malinajs-router';
-  import {sockets} from '@/stores/sockets';
+  import {sockets,makeSocketStore} from '@/stores/sockets';
 
   import Request from '@/app/Request';
   import Saved from '@/app/Saved';
@@ -11,78 +11,101 @@
 
   export let id;
 
-  let socket;
+  let online = false;
   let info;
   let requests = [];
-
   let editorMode = 'hex';
   let editorValue = [];
 
-  $onMount( ()=> sockets.$$(updateSocket) );
-  $: id, updateSocket;
+  const socket = makeSocketStore(id);
 
-  function updateSocket(){
-    socket = sockets.$.find( s => s.id==id );
-    if(socket) info = {
-      ip: socket.ip,
-      num: socket.num,
+  $onMount(()=>socket.status.$$( params => {
+    online = !!params;
+    if(online && !info) info = {
+      ip: params.ip,
+      num: params.num,
     }
-  }
+  }));
 
-  function addRequest(){
-    requests.push({
-      request:[],
-      answer:[]
-    });
+  $onMount(()=>socket.$$( data => {
+    requests = data;
+  }));
+
+  let sending = false;
+  async function send(){
+    sending = true;
+    await socket.send(editorValue);
+    editorValue=[];
+    sending = false;
   }
 </script>
 
-<Pane row>
-  <Pane col>
-    <Pane row size="5" class="top">
-      <div class="status">
-        {#if info}
-          <Icon src={mdiCircle} color="var(--color-{socket ? 'success' : 'error'})" size="0.7"/>
-          Connection #{info.num}
-          <span>
-            {info.ip}
-          </span>
-        {/if}
-      </div>
-    </Pane>
-    <Pane>
-      {#each requests as request}
-        <div class="request">
-          <Request {request} />
+{#if info}
+  <Pane row>
+    <Pane col>
+      <Pane row size="5" class="top">
+        <div class="status">
+          {#if info}
+            <Icon src={mdiCircle} color="var(--color-{online ? 'success' : 'error'})" size="0.7"/>
+            Connection #{info.num}
+            <span>
+              {info.ip}
+            </span>
+          {/if}
         </div>
-      {/each}
+      </Pane>
+      <Pane class="requests">
+        <div>
+        {#each requests as request}
+          <div class="request">
+            <Request {request} />
+          </div>
+        {/each}
+        </div>
+      </Pane>
     </Pane>
+    {#if online}
+      <Pane size="16" class="saved" col>
+        <Saved data={editorValue} @select={(e)=>editorValue=e.detail}/>
+      </Pane>
+    {/if}
   </Pane>
-  <Pane size="16" class="saved" col>
-    <Saved data={editorValue} @select={(e)=>editorValue=e.detail}/>
-  </Pane>
-</Pane>
-<Pane row class="editor" size="11">
-  <Pane><Editor mode={editorMode} :value={editorValue}/></Pane>
-  <Pane size="16" col>
-    <Pane>
-        <Field gapless class="switch">
-          {#each Object.keys(modes) as mode}
-            <Button secondary={editorMode===mode} small @click={editorMode=mode}>{mode[0].toUpperCase()+mode.slice(1)}</Button>
-          {/each}
-        </Field>
+  {#if online}
+    <Pane row class="editor" size="11">
+      <Pane><Editor mode={editorMode} :value={editorValue}/></Pane>
+      <Pane size="16" col>
+        <Pane>
+            <Field gapless class="switch">
+              {#each Object.keys(modes) as mode}
+                <Button secondary={editorMode===mode} small @click={editorMode=mode}>{mode[0].toUpperCase()+mode.slice(1)}</Button>
+              {/each}
+            </Field>
+        </Pane>
+        <Pane class="text-center">
+          <Button 
+            primary 
+            iconRight={mdiSend} 
+            disabled={!editorValue.length}
+            loading={sending}
+            @click={send}
+          >Send</Button>
+        </Pane>
+      </Pane>
     </Pane>
-    <Pane class="text-center">
-      <Button primary iconRight={mdiSend} disabled={!editorValue.length}>Send</Button>
-    </Pane>
-  </Pane>
-</Pane>
+  {/if}
+{:else}
 
+{/if}
 
 
 <style>
   .top{
     border-bottom: var(--border);
+  }
+  .requests{
+    flex-grow: 1;
+    flex-basis:0;
+    overflow-y: auto;
   }
   .request{
     margin: 2rem;
