@@ -6,6 +6,8 @@
 
   let inputs = [];    //Array of <input> elements;
 
+  const toHex = int => modes['hex'].value(int);
+
   // Current mode object
   $: MODE = modes[mode];
 
@@ -106,14 +108,14 @@
       <tr>
         <th> </th>
         {#each 16 as _,byte}
-        <th>{byte.toString(16)}</th>
+        <th>{toHex(byte)}</th>
         {/each}
       </tr>
     </thead>
     <tbody>
       {#each lines as _,line}
         <tr>
-          <td class="adr">{(line*16).toString(16)}</td>
+          <td class="adr">{toHex(line*16)}</td>
           {#each 16 as _,byte}
             {* const id = (16*line)+byte}
             <td><input type="text" *byteInput={id} disabled={id > value.length} value={getByteValue(id)}/></td>
@@ -157,6 +159,10 @@
   th { 
     background-color: var(--color-soft); 
     
+  }
+
+  tr td:first-child{
+    color: var(--color-neutral)
   }
 
   thead{

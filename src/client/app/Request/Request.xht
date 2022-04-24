@@ -8,13 +8,13 @@
   export let data;
 
   let mode = 'hex';
+  let lines = Math.ceil(data.length / 16);
 
   const income = type == 'in';
   const outcome = !income;
+  const toHex = int => modes['hex'].value(int);
 
   $: MODE = modes[mode];
-
-  let lines = Math.ceil(data.length / 16);
 
   function getByte(line,num){
     const int = data[(line+1)*num];
@@ -31,27 +31,29 @@
 <div class="wrapper" class:outcome>
   <Card class="card">
     <Pane col>
+
       <Pane row class="top">
         <Pane>
           <div class="sender" class:income class:outcome>
-            {type=='in' ? 'Client' : 'Server'}
+            {income ? 'Client' : 'Server'}
           </div>
         </Pane>
-        <Pane class="text-right">
+        <Pane class="right">
           <ModeSwitcher mini :mode/>
         </Pane>
       </Pane>
+
       <Pane>
         <table>
           <tr>
-            <th> </th>
+            <th></th>
             {#each 16 as _,i}
-              <th>{i.toString(16)}</th>
+              <th>{toHex(i)}</th>
             {/each}
           </tr>
           {#each lines as _,line}
           <tr>
-            <td>{(line*16).toString(16)}</td>
+            <td>{toHex(line*16)}</td>
             {#each 16 as _,i}
               <td>{getByte(line,i)}</td>
             {/each}
@@ -59,6 +61,7 @@
           {/each}
         </table>
       </Pane>
+
     </Pane>
   </Card>
 </div>
@@ -115,6 +118,7 @@
   tr td:first-child{
     width: 5rem;
     text-align: right;
-    color: var(--color-neutral)
+    color: var(--color-neutral);
+    user-select: none;
   }
 </style>

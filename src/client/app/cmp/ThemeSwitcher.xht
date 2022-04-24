@@ -1,0 +1,11 @@
+<script>
+  import {Button, theme, currentTheme} from 'malina-ui';
+  import {mdiThemeLightDark} from '@mdi/js'
+</script>
+
+<Button 
+  clear
+  icon={mdiThemeLightDark}
+  secondary={currentTheme.$ == 'light'}
+  @click={theme.toggle()}
+/>

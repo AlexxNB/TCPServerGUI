@@ -1,11 +1,35 @@
+body{
+  --border: 1px solid var(--color-neutral);
+}
+
+.inline{
+  display: inline-block;
+}
+
 .mt-2{
   margin-top: 2rem;
 }
 
-.text-center{
+.center{
+  text-align: center;
+}
+
+.right{
   text-align: right;
 }
 
-.text-right{
-  text-align: right;
+.br{
+  border-right: var(--border);
+}
+
+.bl{
+  border-left: var(--border);
+}
+
+.bt{
+  border-top: var(--border);
+}
+
+.bb{
+  border-bottom: var(--border);
 }

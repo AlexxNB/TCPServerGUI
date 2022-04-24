@@ -6,7 +6,7 @@
   export let mini = false;
 </script>
 
-<Field gapless class="switch {mini ? 'mini' : ''}">
+<Field gapless class="switch inline {mini ? 'mini' : ''}">
   {#each Object.keys(modes) as modeName}
     {* const title = modeName[0].toUpperCase()+modeName.slice(1)}
     <Button secondary={mode === modeName} clear={mini} small @click={mode=modeName}>{title}</Button>
@@ -14,10 +14,6 @@
 </Field>
 
 <style>
-  .switch{
-    display: inline-block;
-  }
-
   .switch :global(.inputs){
     margin: 0;
   }

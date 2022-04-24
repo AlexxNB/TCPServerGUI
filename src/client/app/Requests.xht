@@ -3,13 +3,13 @@
   import {mdiCircle, mdiSend} from '@mdi/js';
   import {Route} from 'malinajs-router';
   import {sockets,makeSocketStore} from '@/stores/sockets';
+  import {modes} from '@/lib/modes';
 
   import Request from '@/app/Request';
   import Saved from '@/app/Saved';
   import Editor from '@/app/Editor';
   import ModeSwitcher from '@/app/cmp/ModeSwitcher';
-  import {modes} from '@/lib/modes';
-
+  
   export let id;
 
   let online = false;
@@ -65,7 +65,9 @@
 {#if info}
   <Pane row>
     <Pane col>
-      <Pane row size="5" class="top">
+
+      <!-- Status line -->
+      <Pane row size="5" class="bb">
         <div class="status">
           {#if info}
             <Icon src={mdiCircle} color="var(--color-{online ? 'success' : 'error'})" size="0.7"/>
@@ -76,6 +78,8 @@
           {/if}
         </div>
       </Pane>
+
+      <!-- Requests list -->
       <Pane col>
         <div class="requests" #dv *scrollToDown={requests}>
         {#each requests as request}
@@ -83,23 +87,31 @@
         {/each}
         </div>
       </Pane>
+
     </Pane>
+
+    <!-- Saved presets -->
     {#if online}
-      <Pane size="16" class="saved" col>
+      <Pane size="16" class="bl" col>
         <Saved data={editorValue} @select={(e)=>editorValue=e.detail}/>
       </Pane>
     {/if}
+
   </Pane>
   {#if online}
-    <Pane row class="editor" size="11">
+    <Pane row class="editor bt" size="11">
+      <!-- Request editor -->
       <Pane>
         <Editor mode={editorMode} :value={editorValue}/>
       </Pane>
+
       <Pane size="16" col>
-        <Pane>
+
+        <Pane class="center">
             <ModeSwitcher :mode={editorMode} />
         </Pane>
-        <Pane class="text-center">
+
+        <Pane class="center">
           <Button 
             primary 
             iconRight={mdiSend} 
@@ -108,18 +120,14 @@
             @click={send}
           >Send</Button>
         </Pane>
+
       </Pane>
     </Pane>
   {/if}
-{:else}
-
 {/if}
 
 
 <style>
-  .top{
-    border-bottom: var(--border);
-  }
   .requests{
     flex-grow: 1;
     flex-basis:0;
@@ -136,11 +144,7 @@
     color: var(--color-neutral);
     font-weight: normal;
   }
-  .saved{
-    border-left: var(--border);
-  }
   .editor{
-    border-top: var(--border);
     overflow: hidden;
   }
 </style>

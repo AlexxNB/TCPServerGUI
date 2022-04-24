@@ -2,7 +2,7 @@
   import {sockets} from '@/stores/sockets';
 </script>
 
-<h5 class="text-center">Connections list</h5>
+<h5 class="center">Connections list</h5>
 
 {#if sockets.$.length}
 <ul>
@@ -13,7 +13,7 @@
   {/each}
 </ul>
 {:else}
-  <div  class="text-center">No connections</div>
+  <div class="center">No connections</div>
 {/if}
 
 <style>
@@ -30,7 +30,6 @@
     list-style-type: none;
     margin: 0;
     padding-left: 2rem;
-
   }
   
 </style>

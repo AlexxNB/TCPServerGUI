@@ -3,9 +3,8 @@
   import {api} from '@/lib/api';
 </script>
 
-<Navbar>
+<Navbar class="navbar">
     <a href="/" class="logo"><h3>TCP Server GUI</h3></a>
-
     {#slot:right}
       {#await api('/server/info') then info}
         <a href="tcp://{info.host}:{info.port}">{info.host}:{info.port}</a>
@@ -16,5 +15,9 @@
 <style>
   .logo{
     text-decoration: none;
+  }
+  .navbar{
+    height: 5rem;
+    background: none;
   }
 </style>
