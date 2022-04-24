@@ -4,7 +4,7 @@ import {SSEClient,api} from '@/lib/api';
 export const sockets = store([], st => {
   return SSEClient('/events/list',{
     list: data => {
-      st.$ = JSON.parse(data);
+      st.$ = data;
     }
   });
 });
@@ -20,7 +20,7 @@ export function makeSocketStore(id){
     // Update store on new messages
     return SSEClient('/events/socket/'+id,{
       message: data => {
-        st.$.push(JSON.parse(data));
+        st.$.push(data);
       }
     });
   });
@@ -37,4 +37,3 @@ export function makeSocketStore(id){
 
   return socketStore;
 }
-

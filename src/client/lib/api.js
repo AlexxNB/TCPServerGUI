@@ -26,7 +26,7 @@ export function SSEClient(endpoint,handlers){
     const source = new EventSource(endpoint);
 
     for(let event in handlers){
-      source.addEventListener(event,e => handlers[event](e.data));
+      source.addEventListener(event,e => handlers[event](JSON.parse(e.data)));
     }
 
     source.addEventListener('error', e => {

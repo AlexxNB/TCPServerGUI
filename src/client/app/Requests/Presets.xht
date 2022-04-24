@@ -1,25 +1,24 @@
 <script>
-  import {saved} from '@/stores/saved';
+  import {presets} from '@/stores/presets';
   import {Pane,Button,Input} from 'malina-ui';
   import {mdiPlus} from '@mdi/js';
 
   export let data;
+  export let sPreset = null; // selected preset
 
-  let sRequest = null; // selected request
-
-  function selectRequest(request){
-    sRequest=request;
-    $emit('select', JSON.parse(JSON.stringify(sRequest.data)));
+  function selectPreset(preset){
+    sPreset=preset;
+    $emit('select', JSON.parse(JSON.stringify(sPreset.data)));
   }
 
   function editTitle(el){
     let fallback;
     function handlerInput(){
-      sRequest.rename(el.value);
+      sPreset.rename(el.value);
     }
 
     function handlerBlur(){
-      if(el.value === '') sRequest.rename(fallback);
+      if(el.value === '') sPreset.rename(fallback);
     }
 
     function handlerFocus(){
@@ -43,27 +42,27 @@
 </script>
 
 <Pane>
-<h5 class="text-center">Saved requests</h5>
+<h5 class="text-center">Saved presets</h5>
 
-{#if saved.$.length}
+{#if presets.$.length}
   <ul>
-    {#each saved.$ as request}
+    {#each presets.$ as preset}
       <li>
         <button 
-          @click={selectRequest(request)} 
-          class:active={sRequest===request}
-          title={request.title}
-        >{request.title}</button></li>
+          @click={selectPreset(preset)} 
+          class:active={sPreset===preset}
+          title={preset.title}
+        >{preset.title}</button></li>
     {/each}
   </ul>
 {:else}
-  <div class="text-center">No saved <br/> requests</div>
+  <div class="text-center">No saved <br/> presets</div>
 {/if}
 </Pane>
-{#if sRequest}
-  <Pane size="20" class="text-center editpanel">
+{#if sPreset}
+  <Pane size="20" class="center editpanel">
     <p>
-      <Input small value={sRequest.title}>
+      <Input small value={sPreset.title}>
         <^ *editTitle />
       </Input>
     </p>
@@ -71,8 +70,8 @@
       <Button 
         small 
         primary
-        disabled={compareBytes(sRequest.data)}
-        @click={sRequest.update(data)}
+        disabled={compareBytes(sPreset.data)}
+        @click={sPreset.update(data)}
         title="Update saved bytes in this preset"
       >Save changes</Button>
     </p>
@@ -80,12 +79,12 @@
       <Button 
         small 
         error
-        @click={()=>{sRequest.delete(); sRequest=null}}
-        title="Delete saved request"
+        @click={()=>{sPreset.delete(); sPreset=null}}
+        title="Delete saved preset"
       >Delete</Button>
       <Button 
         small 
-        @click={sRequest=null}
+        @click={sPreset=null}
         title="Close panel"
       >Close</Button>
     </div>
@@ -98,8 +97,8 @@
       disabled={!data.length} 
       icon={mdiPlus}
       @click={saved.add(data)}
-      title="Save curent bytes in editor in the local storage"
-    >Save in list</Button>
+      title="Save curent bytes in editor to the local storage"
+    >Add preset</Button>
   </Pane>
 {/if}
 

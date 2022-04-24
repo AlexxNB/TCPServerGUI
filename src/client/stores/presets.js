@@ -2,7 +2,7 @@ import {store} from 'storxy';
 
 const KEY = 'saved_requests';
 
-export const saved = store( loadList(), st => {
+export const presets = store( loadList(), st => {
 
   function update(e){
     if(e.key === KEY){
@@ -15,19 +15,19 @@ export const saved = store( loadList(), st => {
   return ()=>window.removeEventListener('storage',update);
 });
 
-saved.subscribe( saveList, true );
+presets.subscribe( saveList, true );
 
-saved.add = function(data){
-  saved.$.push(makeRequestObject({data}));
+presets.add = function(data){
+  presets.$.push(makeRequestObject({data}));
 };
 
 function makeRequestObject(request){
   return {
-    title: request.title || 'Preset #'+(saved.$.length+1),
+    title: request.title || 'Preset #'+(presets.$.length+1),
     data: request.data || [],
     rename(title){ this.title = title; },
     update(bytes){ this.data = bytes; },
-    delete(){ saved.$ = saved.$.filter( item => item !== this ); }
+    delete(){ presets.$ = presets.$.filter( item => item !== this ); }
   };
 }
 

@@ -5,9 +5,9 @@
   import {sockets,makeSocketStore} from '@/stores/sockets';
   import {modes} from '@/lib/modes';
 
-  import Request from '@/app/Request';
-  import Saved from '@/app/Saved';
-  import Editor from '@/app/Editor';
+  import Request from '@/app/Requests/Request';
+  import Presets from '@/app/Requests/Presets';
+  import Editor from '@/app/Requests/Editor';
   import ModeSwitcher from '@/app/cmp/ModeSwitcher';
   
   export let id;
@@ -17,6 +17,8 @@
   let requests = [];
   let editorMode = 'hex';
   let editorValue = [];
+  let sending = false;
+  let selectedPreset = null;;
 
   const socket = makeSocketStore(id);
 
@@ -32,8 +34,8 @@
     requests = data;
   }));
 
-  let sending = false;
   async function send(){
+    console.log(closePreset)
     sending = true;
     await socket.send(editorValue);
     editorValue=[];
@@ -93,13 +95,14 @@
     <!-- Saved presets -->
     {#if online}
       <Pane size="16" class="bl" col>
-        <Saved data={editorValue} @select={(e)=>editorValue=e.detail}/>
+        <Presets data={editorValue} @select={(e)=>editorValue=e.detail} #closePreset/>
       </Pane>
     {/if}
 
   </Pane>
   {#if online}
     <Pane row class="editor bt" size="11">
+
       <!-- Request editor -->
       <Pane>
         <Editor mode={editorMode} :value={editorValue}/>
