@@ -35,7 +35,7 @@
   }));
 
   async function send(){
-    console.log(closePreset)
+    selectedPreset = null;
     sending = true;
     await socket.send(editorValue);
     editorValue=[];
@@ -95,7 +95,7 @@
     <!-- Saved presets -->
     {#if online}
       <Pane size="16" class="bl" col>
-        <Presets data={editorValue} @select={(e)=>editorValue=e.detail} #closePreset/>
+        <Presets data={editorValue} @select={(e)=>editorValue=e.detail} :sPreset={selectedPreset}/>
       </Pane>
     {/if}
 
