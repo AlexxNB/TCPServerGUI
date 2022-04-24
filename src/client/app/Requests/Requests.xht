@@ -18,7 +18,7 @@
   let editorMode = 'hex';
   let editorValue = [];
   let sending = false;
-  let selectedPreset = null;;
+  let presets;
 
   const socket = makeSocketStore(id);
 
@@ -35,7 +35,7 @@
   }));
 
   async function send(){
-    selectedPreset = null;
+    presets.close();
     sending = true;
     await socket.send(editorValue);
     editorValue=[];
@@ -95,7 +95,7 @@
     <!-- Saved presets -->
     {#if online}
       <Pane size="16" class="bl" col>
-        <Presets data={editorValue} @select={(e)=>editorValue=e.detail} :sPreset={selectedPreset}/>
+        <Presets data={editorValue} @select={(e)=>editorValue=e.detail} #presets/>
       </Pane>
     {/if}
 
