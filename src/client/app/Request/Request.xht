@@ -1,8 +1,120 @@
 <script>
-  import {Card} from 'malina-ui'; 
-  export let request;
+  import {Card,Pane} from 'malina-ui'; 
+  import {modes} from '@/lib/modes';
+
+  import ModeSwitcher from '@/app/cmp/ModeSwitcher';
+
+  export let type;
+  export let data;
+
+  let mode = 'hex';
+
+  const income = type == 'in';
+  const outcome = !income;
+
+  $: MODE = modes[mode];
+
+  let lines = Math.ceil(data.length / 16);
+
+  function getByte(line,num){
+    const int = data[(line+1)*num];
+    if(int === undefined) return '';
+
+    let byte = MODE.value(int);
+    if(MODE.uppercase) byte = byte.toUpperCase();
+    if(MODE.lead) byte = byte.padStart(MODE.length,MODE.lead);
+
+    return byte;
+  }
 </script>
 
-<Card>
-  {JSON.stringify(request)}
-</Card>
+<div class="wrapper" class:outcome>
+  <Card class="card">
+    <Pane col>
+      <Pane row class="top">
+        <Pane>
+          <div class="sender" class:income class:outcome>
+            {type=='in' ? 'Client' : 'Server'}
+          </div>
+        </Pane>
+        <Pane class="text-right">
+          <ModeSwitcher mini :mode/>
+        </Pane>
+      </Pane>
+      <Pane>
+        <table>
+          <tr>
+            <th> </th>
+            {#each 16 as _,i}
+              <th>{i.toString(16)}</th>
+            {/each}
+          </tr>
+          {#each lines as _,line}
+          <tr>
+            <td>{(line*16).toString(16)}</td>
+            {#each 16 as _,i}
+              <td>{getByte(line,i)}</td>
+            {/each}
+          </tr>
+          {/each}
+        </table>
+      </Pane>
+    </Pane>
+  </Card>
+</div>
+
+<style>
+  .wrapper{
+    padding: 1rem 2rem;
+  }
+
+  .wrapper.outcome{
+    text-align: right;
+  }
+
+  .card{
+    display: inline-block;
+    padding: 0;
+    width:  60rem;
+    text-align: left;
+  }
+
+  .top{
+    border-bottom: 1px solid var(--color-soft)
+  }
+
+  .sender{
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding: .8rem;
+  }
+
+  .sender.income{
+    color: var(--color-success);
+  }
+
+  .sender.outcome{
+    color: var(--color-neutral);
+  }
+
+  table{
+    border-collapse: collapse; 
+    width: 100%; 
+    font-family: monospace;
+    font-size: 1.5rem;
+    table-layout: fixed;
+    margin: 0;
+  }
+
+  th, td { 
+    padding: 0; 
+    text-align: center;
+    width: auto;
+  }
+
+  tr td:first-child{
+    width: 5rem;
+    text-align: right;
+    color: var(--color-neutral)
+  }
+</style>

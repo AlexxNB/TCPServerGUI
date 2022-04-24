@@ -7,7 +7,8 @@
   import Request from '@/app/Request';
   import Saved from '@/app/Saved';
   import Editor from '@/app/Editor';
-  import {modes} from '@/app/Editor/modes.js';
+  import ModeSwitcher from '@/app/cmp/ModeSwitcher';
+  import {modes} from '@/lib/modes';
 
   export let id;
 
@@ -38,6 +39,27 @@
     editorValue=[];
     sending = false;
   }
+
+  function scrollToDown(el,param){
+
+    let preventScroll = false;
+    function handler(e){
+      preventScroll = el.scrollHeight > el.scrollTop+el.clientHeight+10;
+    }
+
+    el.addEventListener('scroll',handler);
+    return {
+      async update(p){
+        await $tick();
+        await $tick();
+        !preventScroll && el.scroll({top: el.scrollHeight, behavior: 'smooth'})
+      },
+      destroy(){
+        el.removeEventListener('scroll',handler);
+      }
+    }
+  }
+
 </script>
 
 {#if info}
@@ -54,12 +76,10 @@
           {/if}
         </div>
       </Pane>
-      <Pane class="requests">
-        <div>
+      <Pane col>
+        <div class="requests" #dv *scrollToDown={requests}>
         {#each requests as request}
-          <div class="request">
-            <Request {request} />
-          </div>
+          <Request data={request.data} type={request.type}/>
         {/each}
         </div>
       </Pane>
@@ -72,14 +92,12 @@
   </Pane>
   {#if online}
     <Pane row class="editor" size="11">
-      <Pane><Editor mode={editorMode} :value={editorValue}/></Pane>
+      <Pane>
+        <Editor mode={editorMode} :value={editorValue}/>
+      </Pane>
       <Pane size="16" col>
         <Pane>
-            <Field gapless class="switch">
-              {#each Object.keys(modes) as mode}
-                <Button secondary={editorMode===mode} small @click={editorMode=mode}>{mode[0].toUpperCase()+mode.slice(1)}</Button>
-              {/each}
-            </Field>
+            <ModeSwitcher :mode={editorMode} />
         </Pane>
         <Pane class="text-center">
           <Button 
@@ -105,7 +123,7 @@
   .requests{
     flex-grow: 1;
     flex-basis:0;
-    overflow-y: auto;
+    overflow-y: scroll;
   }
   .request{
     margin: 2rem;
@@ -124,9 +142,5 @@
   .editor{
     border-top: var(--border);
     overflow: hidden;
-  }
-  .switch :global(.inputs){
-    align-items: center;
-    padding: .3rem;
   }
 </style>

@@ -1,0 +1,31 @@
+<script>
+  import {Field, Button} from 'malina-ui';
+  import {modes} from '@/lib/modes';
+
+  export let mode = 'hex';
+  export let mini = false;
+</script>
+
+<Field gapless class="switch {mini ? 'mini' : ''}">
+  {#each Object.keys(modes) as modeName}
+    {* const title = modeName[0].toUpperCase()+modeName.slice(1)}
+    <Button secondary={mode === modeName} clear={mini} small @click={mode=modeName}>{title}</Button>
+  {/each}
+</Field>
+
+<style>
+  .switch{
+    display: inline-block;
+  }
+
+  .switch :global(.inputs){
+    margin: 0;
+  }
+
+  .mini :global(button){
+    padding:.2rem;
+    height: 1.4rem;
+    font-weight: normal;
+    font-size: 1.2rem;
+  }
+</style>
