@@ -9,8 +9,11 @@ const sockets = runTCPServer();
 
 const app = server({
   host: HOST,
-  port: GUI_PORT
+  port: GUI_PORT,
+  banner: false,
+  log: false
 });
+console.log(`Web-GUI started on http://${HOST}:${GUI_PORT}`);
 
 app.use(errorMiddleware, SSEMiddleware);
 

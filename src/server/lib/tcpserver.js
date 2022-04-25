@@ -25,9 +25,13 @@ export function runTCPServer(){
     };
 
     socketStore.add(socketObj);
+    console.log(`New connection #${socketObj.num} from ${socketObj.ip}`);
 
     socket.on('data',data => dataStore.$.push({type:'in',data: data.toJSON().data}));
-    socket.on('close',() => socketStore.delete(socketObj));
+    socket.on('close',() => {
+      socketStore.delete(socketObj);
+      console.log(`The connection #${socketObj.num} was closed.`);
+    });
   });
 
   const kill = ()=>server.close();
@@ -35,6 +39,7 @@ export function runTCPServer(){
   process.on('exit', kill);
 
   server.listen(PORT,HOST);
+  console.log(`TCP Server started on ${HOST}:${PORT}`);
 
   return socketStore;
 }
