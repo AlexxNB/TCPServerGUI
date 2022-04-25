@@ -1,2 +1,3 @@
 # TCPServerGUI
-TCP Server with GUI to debug tcp connections.
+The TCP Server with GUI to debug TCP connections.
+

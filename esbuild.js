@@ -23,6 +23,7 @@ const remote = DEV && createRemote('malina_fullstack_template');
 (async()=>{
   const bundleServer = await build_server();
   const bundleClient = await build_client();
+  await build_cli();
 
   if(DEV){
 
@@ -56,6 +57,16 @@ async function build_server(){
     plugins:[
       plugin_server()
     ]
+  });
+}
+
+async function build_cli(){
+  return await build({
+    entryPoints: ['src/cli/tcpsrv.js'],
+    bundle: true,
+    outfile: 'dist/tcpsrv.js',
+    platform: 'node',
+    minify: true
   });
 }
 

@@ -1,6 +1,6 @@
 import server from '@server';
 
-import { GUI_PORT } from '@srv/constants';
+import { HOST,GUI_PORT } from '@srv/constants';
 import { runTCPServer } from '@srv/lib/tcpserver';
 import { SSEMiddleware } from '@srv/lib/sse';
 import { errorMiddleware } from '@srv/lib/error';
@@ -8,11 +8,11 @@ import { errorMiddleware } from '@srv/lib/error';
 const sockets = runTCPServer();
 
 const app = server({
+  host: HOST,
   port: GUI_PORT
 });
 
 app.use(errorMiddleware, SSEMiddleware);
-
 
 /** Info about running server */
 app.get('/server/info', (req, res) => {

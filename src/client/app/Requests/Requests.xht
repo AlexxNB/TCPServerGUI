@@ -21,13 +21,14 @@
   let presets;
 
   const socket = makeSocketStore(id);
-
+console.log(socket)
   $onMount(()=>socket.status.$$( params => {
     online = !!params;
     if(online && !info) info = {
       ip: params.ip,
       num: params.num,
     }
+    
   }));
 
   $onMount(()=>socket.$$( data => {
