@@ -1,4 +1,5 @@
 node_modules
 dist/app.*
+dist/tcpsrv.*
 dist/static/build
 package-lock.json
