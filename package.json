@@ -9,8 +9,8 @@
     "dev": "node --enable-source-maps esbuild --dev",
     "prestart": "npm run build",
     "start": "cd dist && node app",
-    "cli": "npm run build && node dist/tcpsrv",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "cli": "node dist/tcpsrv",
+    "test": "node test/run"
   },
   "license": "MIT",
   "devDependencies": {
@@ -23,7 +23,10 @@
     "malinajs-router": "^0.1.9",
     "nanoid": "^3.3.2",
     "node-watch": "^0.7.2",
+    "puppeteer": "^13.6.0",
     "sade": "^1.8.1",
-    "storxy": "^0.1.12"
+    "storxy": "^0.1.12",
+    "uvu": "^0.5.3",
+    "wait-port": "^0.2.9"
   }
 }
