@@ -21,7 +21,7 @@
   let presets;
 
   const socket = makeSocketStore(id);
-console.log(socket)
+
   $onMount(()=>socket.status.$$( params => {
     online = !!params;
     if(online && !info) info = {
@@ -95,7 +95,7 @@ console.log(socket)
 
     <!-- Saved presets -->
     {#if online}
-      <Pane size="16" class="bl" col>
+      <Pane size="16" class="presets bl" col>
         <Presets data={editorValue} @select={(e)=>editorValue=e.detail} #presets/>
       </Pane>
     {/if}

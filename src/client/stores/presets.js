@@ -18,7 +18,8 @@ export const presets = store( loadList(), st => {
 presets.subscribe( saveList, true );
 
 presets.add = function(data){
-  presets.$.push(makeRequestObject({data}));
+  presets.$.push(makeRequestObject({data: JSON.parse(JSON.stringify(data))}));
+  return presets.$[presets.$.length -1];
 };
 
 function makeRequestObject(request){

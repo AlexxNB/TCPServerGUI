@@ -39,6 +39,8 @@
   }
  
   function compareBytes(bytes){
+    console.log(bytes)
+    console.log(data)
     return bytes.length === data.length && data.every((b, i) => b === bytes[i]);
   }
 </script>
@@ -98,7 +100,7 @@
       primary 
       disabled={!data.length} 
       icon={mdiPlus}
-      @click={presets.add(data)}
+      @click={sPreset=presets.add(data)}
       title="Save curent bytes in editor to the local storage"
     >Add preset</Button>
   </Pane>
