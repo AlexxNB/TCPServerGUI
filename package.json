@@ -1,6 +1,6 @@
 {
   "name": "tcpsrv",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TCP Server with GUI for debugging TCP connections.",
   "main": "dist/app.js",
   "bin": "dist/tcpsrv.js",
