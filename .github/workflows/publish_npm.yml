@@ -17,6 +17,8 @@ jobs:
           node-version: 16
       - name: Installing NPM deps
         run: npm install
+      - name: Build
+        run: npm run build
       - name: Testing
         run: npm run test
 
@@ -34,7 +36,7 @@ jobs:
         run: npm install
         env:
           PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: 1
-      - name: Build modules
+      - name: Build
         run: npm run build
       - name: Publishing on NPM
         run: npm publish
