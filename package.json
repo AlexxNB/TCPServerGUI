@@ -1,6 +1,6 @@
 {
   "name": "malina-fullstack-app",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "TCP Server with GUI for debugging TCP connections.",
   "main": "dist/app.js",
   "bin": "dist/tcpsrv.js",
