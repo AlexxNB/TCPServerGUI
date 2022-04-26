@@ -11,7 +11,7 @@ sade('tcpsrv',true)
   .example('tcpsrv --host 0.0.0.0 --port 5050')
   .option('-g, --guiport','Port to bind Web-GUI',7000)
   .option('-p, --port','Port to bind TCP Server',6969)
-  .option('-h, --host','Hostname to bind TCP Server and Web-GUI','localhost')
+  .option('-i, --host','Hostname to bind TCP Server and Web-GUI','localhost')
   .option('-e, --echo','Run echo-client for testing purposes',false)
   .action( opts => {
     if(opts.echo)

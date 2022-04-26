@@ -1,10 +1,11 @@
-import {spawnSync} from 'child_process';
+import {spawn} from 'child_process';
 
 export function runServer(host,port,guiport){
-  spawnSync('node',['app.js'],{
+  const srv = spawn('node',['app.js'],{
     cwd: __dirname,
     windowsHide: true,
-    stdio: ['inherit','inherit','inherit'],
+    stdio: 'inherit',
+    detached: false,
     env: {
       ...process.env,
       HOST: host,
@@ -12,4 +13,9 @@ export function runServer(host,port,guiport){
       GUI_PORT: guiport,
     }
   });
+
+  const kill = ()=>srv.kill();
+
+  process.on('SIGTERM', kill);
+  process.on('exit', kill);
 }
