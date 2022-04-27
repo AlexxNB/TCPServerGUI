@@ -10,28 +10,27 @@ export function runTCPServer(){
   let num = 0;
 
   const server = net.createServer( socket => {
-    const dataStore = store([]);
 
     const socketObj = {
       id: nanoid(),
       num: num++,
       ip: socket.remoteAddress,
-      data: dataStore,
-      send: data => {
+      data: store([]),
+      send(data){
         socket.write(data);
-        dataStore.$.push({type:'out',data: data.toJSON().data});
+        this.data.$.push({type:'out',data: data.toJSON().data});
       },
       close: ()=>socket.destroy()
     };
 
-    socketStore.add(socketObj);
-    console.log(`New connection #${socketObj.num} from ${socketObj.ip}`);
-
-    socket.on('data',data => dataStore.$.push({type:'in',data: data.toJSON().data}));
+    socket.on('data',data => socketObj.data.$.push({type:'in',data: data.toJSON().data}));
     socket.on('close',() => {
       socketStore.delete(socketObj);
       console.log(`The connection #${socketObj.num} was closed.`);
     });
+
+    socketStore.add(socketObj);
+    console.log(`New connection #${socketObj.num} from ${socketObj.ip}`);
   });
 
   const kill = ()=>server.close();
