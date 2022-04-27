@@ -5,8 +5,10 @@ import { runTCPServer } from '@srv/lib/tcpserver';
 import { SSEMiddleware } from '@srv/lib/sse';
 import { errorMiddleware } from '@srv/lib/error';
 
+/** Starting TCP server */
 const sockets = runTCPServer();
 
+/** Starting web server */
 const app = server({
   host: HOST,
   port: GUI_PORT,
@@ -15,6 +17,7 @@ const app = server({
 });
 console.log(`Web-GUI started on http://${HOST}:${GUI_PORT}`);
 
+/** Including middlewares */
 app.use(errorMiddleware, SSEMiddleware);
 
 /** Info about running server */
