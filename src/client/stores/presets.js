@@ -2,6 +2,7 @@ import {store} from 'storxy';
 
 const KEY = 'saved_requests';
 
+/** Store with presets */
 export const presets = store( loadList(), st => {
 
   function update(e){
@@ -10,36 +11,47 @@ export const presets = store( loadList(), st => {
     }
   }
 
+  // Update store if presets changes on other tab
   window.addEventListener('storage',update);
-
   return ()=>window.removeEventListener('storage',update);
 });
 
+// Dump list on every change
 presets.subscribe( saveList, true );
 
+/** Add preset in a list */
 presets.add = function(data){
-  presets.$.push(makeRequestObject({data: JSON.parse(JSON.stringify(data))}));
+  presets.$.push( makePresetObject({data: cloneObject(data)}) );
   return presets.$[presets.$.length -1];
 };
 
-function makeRequestObject(request){
+/** Make preset object from {title,data} */
+function makePresetObject(preset){
   return {
-    title: request.title || 'Preset #'+(presets.$.length+1),
-    data: request.data || [],
+    title: preset.title || 'Preset #'+(presets.$.length+1),
+    data: preset.data || [],
     rename(title){ this.title = title; },
     update(bytes){ this.data = bytes; },
     delete(){ presets.$ = presets.$.filter( item => item !== this ); }
   };
 }
 
+/** Dump list to storage */
 function saveList(list){
   localStorage.setItem(KEY, JSON.stringify(list) );
 }
 
+/** Retrieve list from storage */
 function loadList(){
   return parse(localStorage.getItem(KEY));
 }
 
+/** Parsing stored JSON to preset objects */
 function parse(json){
-  return JSON.parse( json || '[]' ).map(makeRequestObject);
+  return JSON.parse( json || '[]' ).map(makePresetObject);
+}
+
+/** Clone serializable object */
+function cloneObject(obj){
+  return JSON.parse(JSON.stringify(obj));
 }

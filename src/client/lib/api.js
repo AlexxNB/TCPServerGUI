@@ -1,3 +1,4 @@
+/** Simple Fetch wrapper which sends GET and POST requests and parse JSON data */
 export async function api(endpoint,data){
   try {
 
@@ -12,34 +13,18 @@ export async function api(endpoint,data){
     return result.ok ? result.json() : null;
 
   } catch (err) {
-
     console.log(err.message);
     return null;
-
   }
 }
 
+/** SSE connection which runs callbacks according received event */
 export function SSEClient(endpoint,handlers){
-  let close = ()=>{};
+  const source = new EventSource(endpoint);
 
-  function listenList(){
-    const source = new EventSource(endpoint);
-
-    for(let event in handlers){
-      source.addEventListener(event,e => handlers[event](JSON.parse(e.data)));
-    }
-
-    source.addEventListener('error', e => {
-      if(e.eventPhase == EventSource.CLOSED) close();
-      if(e.target.readyState == EventSource.CLOSED) {
-        setTimeout(listenList,3000);
-      }
-    });
-
-    close = ()=>source.close();
+  for(let event in handlers){
+    source.addEventListener(event,e => handlers[event](JSON.parse(e.data)));
   }
 
-  listenList();
-
-  return ()=>close();
+  return ()=>source.close();
 }
