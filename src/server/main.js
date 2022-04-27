@@ -26,9 +26,7 @@ app.get('/server/info', (req, res) => {
 });
 
 /** SSE: List of current connections */
-app.get('/events/list', (req, res, next) => {
-  if(!req.isSSE) return next();
-
+app.get('/events/list', (req, res) => {
   const un = socketStore.$$(list => {
     res.SSE.send('list', list);
   });
@@ -58,15 +56,14 @@ app.post('/socket/:socket_id', (req, res) => {
 });
 
 /** SSE: Listen socket data */
-app.get('/events/socket/:socket_id', (req, res, next) => {
-  if(!req.isSSE) return next();
-
+app.get('/events/socket/:socket_id', (req, res) => {
   const socket = socketStore.get(req.params.socket_id);
   if(!socket) return res.error('Unknown socket ID');
 
   const un = socket.data.$$(data => {
     res.SSE.send('message', data[data.length - 1]);
   },true);
+
   res.on('close', un);
 });
 
