@@ -6,7 +6,7 @@ import { SSEMiddleware } from '@srv/lib/sse';
 import { errorMiddleware } from '@srv/lib/error';
 
 /** Starting TCP server */
-const sockets = runTCPServer();
+const socketStore = runTCPServer();
 
 /** Starting web server */
 const app = server({
@@ -22,14 +22,14 @@ app.use(errorMiddleware, SSEMiddleware);
 
 /** Info about running server */
 app.get('/server/info', (req, res) => {
-  res.send(sockets.info());
+  res.send(socketStore.info());
 });
 
 /** SSE: List of current connections */
 app.get('/events/list', (req, res, next) => {
   if(!req.isSSE) return next();
 
-  const un = sockets.$$(list => {
+  const un = socketStore.$$(list => {
     res.SSE.send('list', list);
   });
 
@@ -38,7 +38,7 @@ app.get('/events/list', (req, res, next) => {
 
 /** Get socket data */
 app.get('/socket/:socket_id', (req, res) => {
-  const socket = sockets.get(req.params.socket_id);
+  const socket = socketStore.get(req.params.socket_id);
   if(!socket) return res.error('Unknown socket ID');
 
   res.send(socket.data.$);
@@ -46,7 +46,7 @@ app.get('/socket/:socket_id', (req, res) => {
 
 /** Send data to socket */
 app.post('/socket/:socket_id', (req, res) => {
-  const socket = sockets.get(req.params.socket_id);
+  const socket = socketStore.get(req.params.socket_id);
   if(!socket) return res.error('Unknown socket ID');
 
   try {
@@ -61,7 +61,7 @@ app.post('/socket/:socket_id', (req, res) => {
 app.get('/events/socket/:socket_id', (req, res, next) => {
   if(!req.isSSE) return next();
 
-  const socket = sockets.get(req.params.socket_id);
+  const socket = socketStore.get(req.params.socket_id);
   if(!socket) return res.error('Unknown socket ID');
 
   const un = socket.data.$$(data => {
