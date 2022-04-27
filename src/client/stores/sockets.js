@@ -2,7 +2,9 @@ import {store,computed} from 'storxy';
 import {SSEClient,api} from '@/lib/api';
 
 /** Store for connections list */
-export const sockets = store([], st => {
+export const socketsList = store([], st => {
+
+  // Update store value when new list recieved
   return SSEClient('/events/list',{
     list: data => {
       st.$ = data;
@@ -12,19 +14,22 @@ export const sockets = store([], st => {
 
 /** Make connection store by its id */
 export function makeSocketStore(id){
-  const socketStore = store([], st => {
+  const socketStore = store([], async st => {
 
     // Get all messages till this moment
-    api('/socket/'+id).then( currentData => {
-      if(currentData) st.$ = currentData;
-    });
+    const currentData = await api('/socket/'+id);
 
-    // Update store on new messages
-    return SSEClient('/events/socket/'+id,{
-      message: data => {
-        st.$.push(data);
-      }
-    });
+    if(currentData !== null) {
+      // Make all messages history as store value
+      st.$ = currentData;
+
+      // Open SSE connection and add all new messages to store value
+      return SSEClient('/events/socket/'+id,{
+        message: data => {
+          st.$.push(data);
+        }
+      });
+    }
   });
 
   /** Send message method  */
@@ -33,7 +38,7 @@ export function makeSocketStore(id){
   };
 
   // Socket status info
-  socketStore.status = computed(sockets, list => {
+  socketStore.status = computed(socketsList, list => {
     return list && list.find( s => s.id == id );
   });
 

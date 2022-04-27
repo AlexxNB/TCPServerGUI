@@ -1,12 +1,12 @@
 <script>
-  import {sockets} from '@/stores/sockets';
+  import {socketsList} from '@/stores/sockets';
 </script>
 
 <h5 class="center">Connections list</h5>
 
-{#if sockets.$.length}
+{#if socketsList.$.length}
 <ul>
-  {#each sockets.$ as socket}
+  {#each socketsList.$ as socket}
     <li>
       <a href="/socket/{socket.id}"><span>#{socket.num}</span> {socket.ip}</a>
     </li>

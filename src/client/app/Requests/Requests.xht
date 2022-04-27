@@ -2,7 +2,7 @@
   import {Card,Container,Pane,Button,Icon,Field} from 'malina-ui';
   import {mdiCircle, mdiSend} from '@mdi/js';
   import {Route} from 'malinajs-router';
-  import {sockets,makeSocketStore} from '@/stores/sockets';
+  import {makeSocketStore} from '@/stores/sockets';
   import {modes} from '@/lib/modes';
 
   import Request from '@/app/Requests/Request';
@@ -22,6 +22,7 @@
 
   const socket = makeSocketStore(id);
 
+  // Set online status and info about connection
   $onMount(()=>socket.status.$$( params => {
     online = !!params;
     if(online && !info) info = {
@@ -31,10 +32,12 @@
     
   }));
 
+  // Update requests list on new messages
   $onMount(()=>socket.$$( data => {
     requests = data;
   }));
 
+  /** Send bytes to socket */
   async function send(){
     presets.close();
     sending = true;
@@ -43,17 +46,19 @@
     sending = false;
   }
 
+  /** Scrol el to down when param changes */
   function scrollToDown(el,param){
 
+    // Preventing autocrolling when users scrolled up
     let preventScroll = false;
     function handler(e){
       preventScroll = el.scrollHeight > el.scrollTop+el.clientHeight+10;
     }
-
     el.addEventListener('scroll',handler);
+
     return {
       async update(p){
-        await $tick();
+        await $tick(); // BUG: $tick should be resolved when all chnges already rendered
         await $tick();
         !preventScroll && el.scroll({top: el.scrollHeight, behavior: 'smooth'})
       },
@@ -84,7 +89,7 @@
 
       <!-- Requests list -->
       <Pane col>
-        <div class="requests" #dv *scrollToDown={requests}>
+        <div class="requests" *scrollToDown={requests}>
         {#each requests as request}
           <Request data={request.data} type={request.type}/>
         {/each}

@@ -16,6 +16,7 @@
 
   $: MODE = modes[mode];
 
+  // Get byte from data and return value according current mode
   function getByte(line,num){
     const int = data[(line+1)*num];
     if(int === undefined) return '';
