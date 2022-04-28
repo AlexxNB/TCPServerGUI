@@ -20,8 +20,8 @@ export function runTCPServer(){
 
       /** Send data to socket */
       send(data){
-        socket.write(data);
-        this.data.$.push({type:'out',data: data.toJSON().data});
+        socket.write(Buffer.from(data));
+        this.data.$.push({type:'out',data});
       },
 
       /** Close connection */

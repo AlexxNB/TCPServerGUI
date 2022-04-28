@@ -48,7 +48,7 @@ app.post('/socket/:socket_id', (req, res) => {
   if(!socket) return res.error('Unknown socket ID');
 
   try {
-    socket.send( Buffer.from(req.body) );
+    socket.send(req.body);
     res.send({ok:true});
   } catch (err) {
     res.error(err.message);
