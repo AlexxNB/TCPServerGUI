@@ -6,7 +6,7 @@
 
   import Header from './Header';
   import SocketsList from './SocketsList';
-  import Requests from './Requests';
+  import Socket from './Socket';
 
   import Github from '@/app/cmp/Github';
   import ThemeSwitcher from '@/app/cmp/ThemeSwitcher';
@@ -50,7 +50,7 @@
           <!-- Connection page -->
           <Route path="/socket/:socket_id" force>
             {#slot params}
-              <Requests id={params.socket_id}/>
+              <Socket id={params.socket_id}/>
             {/slot}
           </Route>
 
