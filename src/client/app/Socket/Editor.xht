@@ -25,7 +25,7 @@
     }
 
     function inputHandler(e){
-      el.value = filterByte(el.value);
+      el.value = formatByte(el.value);
 
       if(el.value.length === MODE.length) {
         value[id] = MODE.int(el.value);
@@ -81,7 +81,7 @@
   }
 
   // Filter inputed value
-  function filterByte(val){
+  function formatByte(val){
     val = val.slice(0,MODE.length);
 
     if(MODE.uppercase) val = val.toUpperCase();
