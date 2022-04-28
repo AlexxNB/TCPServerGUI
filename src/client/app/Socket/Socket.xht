@@ -41,7 +41,7 @@
   async function send(){
     presets.close();
     sending = true;
-    await socket.send(editorValue);
+    await socketStore.send(editorValue);
     editorValue=[];
     sending = false;
   }
