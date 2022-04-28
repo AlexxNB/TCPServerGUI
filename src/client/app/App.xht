@@ -5,12 +5,13 @@
   import {Route,router} from 'malinajs-router';
 
   import Header from './Header';
-  import Sockets from './Sockets';
+  import SocketsList from './SocketsList';
   import Requests from './Requests';
 
   import Github from '@/app/cmp/Github';
   import ThemeSwitcher from '@/app/cmp/ThemeSwitcher';
 
+  // WIll use hash navigation instead History API
   router.method('hash');
 </script>
 
@@ -26,7 +27,7 @@
     <Pane row>
       <Pane size="15" class="br" col>
         <Pane>
-          <Sockets/>
+          <SocketsList/>
         </Pane>
         <Pane size="4" class="center">
           <Github/>
