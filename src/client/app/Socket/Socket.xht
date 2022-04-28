@@ -20,10 +20,10 @@
   let sending = false;
   let presets;
 
-  const socket = makeSocketStore(id);
+  const socketStore = makeSocketStore(id);
 
   // Set online status and info about connection
-  $onMount(()=>socket.status.$$( params => {
+  $onMount(()=>socketStore.status.$$( params => {
     online = !!params;
     if(online && !info) info = {
       ip: params.ip,
@@ -33,7 +33,7 @@
   }));
 
   // Update requests list on new messages
-  $onMount(()=>socket.$$( data => {
+  $onMount(()=>socketStore.$$( data => {
     requests = data;
   }));
 
@@ -41,7 +41,7 @@
   async function send(){
     presets.close();
     sending = true;
-    await socket.send(editorValue);
+    await socketStore.send(editorValue);
     editorValue=[];
     sending = false;
   }
