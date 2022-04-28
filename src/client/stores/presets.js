@@ -1,57 +1,47 @@
-import {store} from 'storxy';
+import { store } from 'storxy';
 
-const KEY = 'saved_requests';
+const KEY = 'saved_presets';
 
 /** Store with presets */
-export const presets = store( loadList(), st => {
+export const presets = store( parse(localStorage.getItem(KEY)), st => {
 
-  function update(e){
-    if(e.key === KEY){
-      st.$ = parse( e.newValue );
+  function update(e) {
+    if(e.key === KEY) {
+      st.$ = parse(e.newValue);
     }
   }
 
   // Update store if presets changes on other tab
-  window.addEventListener('storage',update);
-  return ()=>window.removeEventListener('storage',update);
+  window.addEventListener('storage', update);
+  return () => window.removeEventListener('storage', update);
 });
 
 // Dump list on every change
-presets.subscribe( saveList, true );
+presets.subscribe(list => localStorage.setItem(KEY, list), true);
 
 /** Add preset in a list */
-presets.add = function(data){
-  presets.$.push( makePresetObject({data: cloneObject(data)}) );
-  return presets.$[presets.$.length -1];
+presets.add = function (data) {
+  presets.$.push(makePresetObject({ data: cloneObject(data) }));
+  return presets.$[presets.$.length - 1];
 };
 
 /** Make preset object from {title,data} */
-function makePresetObject(preset){
+function makePresetObject(preset) {
   return {
-    title: preset.title || 'Preset #'+(presets.$.length+1),
+    title: preset.title || 'Preset #' + (presets.$.length + 1),
     data: preset.data || [],
-    rename(title){ this.title = title; },
-    update(bytes){ this.data = bytes; },
-    delete(){ presets.$ = presets.$.filter( item => item !== this ); }
+    rename(title) { this.title = title; },
+    update(bytes) { this.data = bytes; },
+    delete() { presets.$ = presets.$.filter(item => item !== this); }
   };
 }
 
-/** Dump list to storage */
-function saveList(list){
-  localStorage.setItem(KEY, JSON.stringify(list) );
-}
-
-/** Retrieve list from storage */
-function loadList(){
-  return parse(localStorage.getItem(KEY));
-}
-
 /** Parsing stored JSON to preset objects */
-function parse(json){
-  return JSON.parse( json || '[]' ).map(makePresetObject);
+function parse(json) {
+  return JSON.parse(json || '[]').map(makePresetObject);
 }
 
 /** Clone serializable object */
-function cloneObject(obj){
+function cloneObject(obj) {
   return JSON.parse(JSON.stringify(obj));
 }
