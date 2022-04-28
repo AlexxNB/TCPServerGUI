@@ -1,6 +1,6 @@
 import { store } from 'storxy';
 
-const KEY = 'saved_presets';
+const KEY = 'presets';
 
 /** Store with presets */
 export const presets = store( parse(localStorage.getItem(KEY)), st => {
@@ -17,10 +17,10 @@ export const presets = store( parse(localStorage.getItem(KEY)), st => {
 });
 
 // Dump list on every change
-presets.subscribe(list => localStorage.setItem(KEY, list), true);
+presets.subscribe(list => localStorage.setItem(KEY, JSON.stringify(list)), true);
 
 /** Add preset in a list */
-presets.add = function (data) {
+presets.add = function(data) {
   presets.$.push(makePresetObject({ data: cloneObject(data) }));
   return presets.$[presets.$.length - 1];
 };
